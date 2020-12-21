@@ -10,7 +10,7 @@ endf
 
 fun! g:VTable.update()
   let cmd = self.command()
-  let b:job = job_start(cmd, {"close_cb": self.outputHandler })
+  let b:job = jobstart(cmd, {"close_cb": self.outputHandler })
   let b:source_changed = 0
 endf
 
@@ -93,7 +93,7 @@ let g:VikubeExplorer = copy(g:VTable)
 fun! g:VikubeExplorer.update()
   let cmd = self.command()
   let shellcmd = ["bash", "-c", cmd . " | awk 'NR == 1; NR > 1 {print $0 | \"sort -b -k1\"}'"]
-  let b:job = job_start(shellcmd, {"close_cb": self.outputHandler })
+  let b:job = jobstart(shellcmd, {"close_cb": self.outputHandler })
   let b:source_changed = 0
 endf
 
@@ -377,7 +377,7 @@ fun! s:deleteResources(keys)
   let cmd = s:cmdbase() . ' delete ' . b:resource_type . ' ' . keyargs
   redraw | echomsg cmd
 
-  let job = job_start(["bash", "-c", cmd], {
+  let job = jobstart(["bash", "-c", cmd], {
         \ "out_io": "buffer",
         \ "out_name": "",
         \ })
