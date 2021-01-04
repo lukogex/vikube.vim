@@ -16,9 +16,11 @@ endf
 
 fun! g:VTable.outputHandler(channel, data, event)
   let lines = []
-  while ch_status(a:channel, {'part': 'out'}) == 'buffered'
-    call add(lines, ch_read(a:channel))
-  endwhile
+  " while ch_status(a:channel, {'part': 'out'}) == 'buffered'
+    " call add(lines, ch_read(a:channel))
+  " endwhile
+  call add(lines, data)
+  call add(lines, event)
   let b:source_cache = join(lines, "\n") . "\n"
   call self.render()
 endf
