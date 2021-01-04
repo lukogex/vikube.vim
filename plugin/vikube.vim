@@ -14,7 +14,7 @@ fun! g:VTable.update()
   let b:source_changed = 0
 endf
 
-fun! g:VTable.outputHandler(channel)
+fun! g:VTable.outputHandler(channel, data, event)
   let lines = []
   while ch_status(a:channel, {'part': 'out'}) == 'buffered'
     call add(lines, ch_read(a:channel))
