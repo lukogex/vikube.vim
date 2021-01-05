@@ -1,11 +1,11 @@
 
 let g:VTable = {}
 
-fun! g:VTable.command()
+fun! g:VTable.command() dict
   return "ls -l"
 endf
 
-fun! g:VTable.help()
+fun! g:VTable.help() dict
 endf
 
 fun! g:VTable.update() dict
@@ -100,7 +100,7 @@ fun! g:VikubeExplorer.update() dict
   let b:source_changed = 0
 endf
 
-fun! g:VikubeExplorer.command()
+fun! g:VikubeExplorer.command() dict
   let cmd = s:cmdbase()
   let cmd = cmd . " get " . b:resource_type
   if b:wide
@@ -116,7 +116,7 @@ fun! g:VikubeExplorer.command()
   return cmd
 endf
 
-fun! g:VikubeExplorer.help()
+fun! g:VikubeExplorer.help() dict
   cal g:Help.reg(s:header(),
     \" ]]      - Next resource type\n".
     \" [[      - Previous resource type\n".
