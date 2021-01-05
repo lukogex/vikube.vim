@@ -101,7 +101,7 @@ let g:VikubeExplorer = copy(g:VTable)
 fun! g:VikubeExplorer.update() dict
   let cmd = self.command()
   let shellcmd = ["bash", "-c", cmd . " | awk 'NR == 1; NR > 1 {print $0 | \"sort -b -k1\"}'"]
-  let b:job = jobstart(shellcmd, {"on_stdout": self.outputHandler})
+  let b:job = jobstart(shellcmd, {"on_stdout": self.outputHandler, "stdout_buffered":v:true})
   let b:source_changed = 0
 endf
 
