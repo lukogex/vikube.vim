@@ -24,8 +24,8 @@ fun! g:VTable.outputHandler(channel, data, event) dict
   " while ch_status(a:channel, {'part': 'out'}) == 'buffered'
     " call add(lines, ch_read(a:channel))
   " endwhile
-  " call add(lines, a:data)
-  " call add(lines, a:event)
+  call add(lines, a:data)
+  call add(lines, a:event)
   let b:source_cache = join(a:data, "\n") . "\n"
   " :echomsg "TEST"
   call s:render()
