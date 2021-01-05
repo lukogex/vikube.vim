@@ -23,7 +23,7 @@ fun! g:VTable.outputHandler(channel, data, event) dict
   call add(lines, a:event)
   let b:source_cache = join(lines, "\n") . "\n"
   :echomsg "TEST"
-  call g:VTable.render()
+  call s:render()
 endf
 
 fun! g:VTable.render() dict
