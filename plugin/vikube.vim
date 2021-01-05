@@ -15,11 +15,16 @@ fun! g:VTable.update() dict
 endf
 
 fun! g:VTable.outputHandler(channel, data, event) dict
-  let lines = []
+  let l:lines = []
+  let eof = (a:data == [''])
+	  " Complete the previous line.
+  let l:lines[-1] .= a:data[0]
+	" Append (last item may be a partial line, until EOF).
+	call extend(l:lines, a:data[1:])
   " while ch_status(a:channel, {'part': 'out'}) == 'buffered'
     " call add(lines, ch_read(a:channel))
   " endwhile
-  call add(lines, a:data)
+  " call add(lines, a:data)
   call add(lines, a:event)
   let b:source_cache = join(lines, "\n") . "\n"
   :echomsg "TEST"
