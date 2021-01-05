@@ -10,7 +10,7 @@ endf
 
 fun! g:VTable.update() dict
   let cmd = self.command()
-  let b:job = jobstart(cmd, {"on_stdout": self.outputHandler })
+  let b:job = jobstart(cmd, {"channel-buffered": self.outputHandler })
   let b:source_changed = 0
 endf
 
