@@ -16,19 +16,19 @@ endf
 
 fun! g:VTable.outputHandler(channel, data, event) dict
   let l:lines = []
-  let eof = (a:data == [''])
+  " let eof = (a:data == [''])
 	  " Complete the previous line.
-  let l:lines[-1] .= a:data[0]
+  " let l:lines[-1] .= a:data[0]
 	" Append (last item may be a partial line, until EOF).
-	call extend(l:lines, a:data[1:])
+	" call extend(l:lines, a:data[1:])
   " while ch_status(a:channel, {'part': 'out'}) == 'buffered'
     " call add(lines, ch_read(a:channel))
   " endwhile
   " call add(lines, a:data)
-  call add(lines, a:event)
-  let b:source_cache = join(lines, "\n") . "\n"
+  " call add(lines, a:event)
+  let b:source_cache = join(a:data, "\n") . "\n"
   :echomsg "TEST"
-  call s:render()
+  call self.render()
 endf
 
 fun! g:VTable.render() dict
@@ -101,7 +101,7 @@ let g:VikubeExplorer = copy(g:VTable)
 fun! g:VikubeExplorer.update() dict
   let cmd = self.command()
   let shellcmd = ["bash", "-c", cmd . " | awk 'NR == 1; NR > 1 {print $0 | \"sort -b -k1\"}'"]
-  let b:job = jobstart(shellcmd, {"on_stdout": self.outputHandler})
+  let b:job = jobstart(shellcmd, {"on_stdout": function("outputHandler", g:VikubeExplorer)})
   let b:source_changed = 0
 endf
 
