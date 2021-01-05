@@ -8,13 +8,13 @@ endf
 fun! g:VTable.help()
 endf
 
-fun! g:VTable.update()
+fun! g:VTable.update() dict
   let cmd = self.command()
-  let b:job = jobstart(cmd, {"on_exit": function("self.outputHandler")})
+  let b:job = jobstart(cmd, {"on_exit": self.outputHandler })
   let b:source_changed = 0
 endf
 
-fun! g:VTable.outputHandler(channel, data, event)
+fun! g:VTable.outputHandler(channel, data, event) dict
   let lines = []
   " while ch_status(a:channel, {'part': 'out'}) == 'buffered'
     " call add(lines, ch_read(a:channel))
@@ -25,7 +25,7 @@ fun! g:VTable.outputHandler(channel, data, event)
   call self.render()
 endf
 
-fun! g:VTable.render()
+fun! g:VTable.render() dict
   let save_cursor = getcurpos()
   if b:source_changed || !exists('b:source_cache')
     call self.update()
@@ -92,10 +92,10 @@ endif
 
 let g:VikubeExplorer = copy(g:VTable)
 
-fun! g:VikubeExplorer.update()
+fun! g:VikubeExplorer.update() dict
   let cmd = self.command()
   let shellcmd = ["bash", "-c", cmd . " | awk 'NR == 1; NR > 1 {print $0 | \"sort -b -k1\"}'"]
-  let b:job = jobstart(shellcmd, {"on_exit": function("self.outputHandler")})
+  let b:job = jobstart(shellcmd, {"on_exit": self.outputHandler })
   let b:source_changed = 0
 endf
 
@@ -914,7 +914,7 @@ com! -nargs=* KubeApplyForce :cal s:VikubeApply('--force', <q-args>)
 com! -nargs=* KubeReplace :cal s:VikubeReplace(<q-args>)
 com! -nargs=* KubeReplaceForce :cal s:VikubeReplace('--force', <q-args>)
 
-com! VikubeNodeList :cal s:Nikube("nodes")
+com! VikubeNodeList :cal s:Vikube("nodes")
 com! VikubePVList :cal s:Vikube("persistentvolumes")
 com! VikubePVCList :cal s:Vikube("persistentvolumeclaims")
 com! VikubeServiceList :cal s:Vikube("services")
