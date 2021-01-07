@@ -1,29 +1,27 @@
 
 let g:VTable = {}
 
-fun! g:VTable.command()
+fun! g:VTable.command() dict
   return "ls -l"
 endf
 
-fun! g:VTable.help()
+fun! g:VTable.help() dict
 endf
 
-fun! g:VTable.update()
+fun! g:VTable.update() dict
   let cmd = self.command()
-  let b:job = job_start(cmd, {"close_cb": self.outputHandler })
+  let b:job = jobstart(cmd, {"on_stdout": self.outputHandler})
   let b:source_changed = 0
 endf
 
-fun! g:VTable.outputHandler(channel)
-  let lines = []
-  while ch_status(a:channel, {'part': 'out'}) == 'buffered'
-    call add(lines, ch_read(a:channel))
-  endwhile
-  let b:source_cache = join(lines, "\n") . "\n"
-  call self.render()
+fun! g:VTable.outputHandler(channel, data, event) dict
+  let l:lines = []
+  let b:source_cache = join(a:data, "\n") . "\n"
+  " `self.render()` not working because self refers to callback options in this case
+  call s:render()
 endf
 
-fun! g:VTable.render()
+fun! g:VTable.render() dict
   let save_cursor = getcurpos()
   if b:source_changed || !exists('b:source_cache')
     call self.update()
@@ -90,14 +88,14 @@ endif
 
 let g:VikubeExplorer = copy(g:VTable)
 
-fun! g:VikubeExplorer.update()
+fun! g:VikubeExplorer.update() dict
   let cmd = self.command()
   let shellcmd = ["bash", "-c", cmd . " | awk 'NR == 1; NR > 1 {print $0 | \"sort -b -k1\"}'"]
-  let b:job = job_start(shellcmd, {"close_cb": self.outputHandler })
+  let b:job = jobstart(shellcmd, {"on_stdout": self.outputHandler, "stdout_buffered":v:true})
   let b:source_changed = 0
 endf
 
-fun! g:VikubeExplorer.command()
+fun! g:VikubeExplorer.command() dict
   let cmd = s:cmdbase()
   let cmd = cmd . " get " . b:resource_type
   if b:wide
@@ -113,7 +111,7 @@ fun! g:VikubeExplorer.command()
   return cmd
 endf
 
-fun! g:VikubeExplorer.help()
+fun! g:VikubeExplorer.help() dict
   cal g:Help.reg(s:header(),
     \" ]]      - Next resource type\n".
     \" [[      - Previous resource type\n".
@@ -377,7 +375,7 @@ fun! s:deleteResources(keys)
   let cmd = s:cmdbase() . ' delete ' . b:resource_type . ' ' . keyargs
   redraw | echomsg cmd
 
-  let job = job_start(["bash", "-c", cmd], {
+  let job = jobstart(["bash", "-c", cmd], {
         \ "out_io": "buffer",
         \ "out_name": "",
         \ })
