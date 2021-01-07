@@ -1,16 +1,16 @@
 
 let g:VTable = {}
 
-fun! g:VTable.command() dict
+fun! g:VTable.command()
   return "ls -l"
 endf
 
-fun! g:VTable.help() dict
+fun! g:VTable.help()
 endf
 
 fun! g:VTable.update() dict
   let cmd = self.command()
-  let b:job = jobstart(cmd, {"on_stdout": self.outputHandler})
+  let b:job = jobstart(cmd, {"on_stdout": self.outputHandler, "stdout_buffered":v:true})
   let b:source_changed = 0
 endf
 
@@ -95,7 +95,7 @@ fun! g:VikubeExplorer.update() dict
   let b:source_changed = 0
 endf
 
-fun! g:VikubeExplorer.command() dict
+fun! g:VikubeExplorer.command()
   let cmd = s:cmdbase()
   let cmd = cmd . " get " . b:resource_type
   if b:wide
@@ -111,7 +111,7 @@ fun! g:VikubeExplorer.command() dict
   return cmd
 endf
 
-fun! g:VikubeExplorer.help() dict
+fun! g:VikubeExplorer.help()
   cal g:Help.reg(s:header(),
     \" ]]      - Next resource type\n".
     \" [[      - Previous resource type\n".
@@ -511,7 +511,7 @@ fun! s:handleFollowLogs()
   endif
   let cont = s:chooseContainer(containers)
   let cmd = s:cmdbase() . " logs --follow --tail=" . g:vikube_default_logs_tail . " --namespace=" . b:namespace . " --timestamps --container=" . cont . ' ' . resource_type . '/' . key
-  exec "botright terminal ++kill=term " . cmd
+  exec "botright terminal " . cmd
 endf
 
 
